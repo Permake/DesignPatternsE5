@@ -1,9 +1,5 @@
 package fr.uge.poo.paint.ex5;
 
-import com.evilcorp.coolgraphics.CoolGraphics;
-import fr.uge.poo.simplegraphics.SimpleGraphics;
-
-import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,17 +21,17 @@ public class MainFileReader {
         switch (tokens[0]) {
           case "line":
             shape = new Line(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]),
-                    Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]));
+                Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]));
             shapeList.add(shape);
             break;
           case "rectangle":
             shape = new Rectangle(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]),
-                    Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]));
+                Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]));
             shapeList.add(shape);
             break;
           case "ellipse":
             shape = new Ellipse(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]),
-                    Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]));
+                Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]));
             shapeList.add(shape);
             break;
         }
@@ -51,12 +47,11 @@ public class MainFileReader {
     Area area;
     if (args.length == 2 && Objects.equals(args[1], "--legacy")) {
       area = new SimpleArea("area", 800, 600);
-    }
-    else {
+    } else {
       area = new CoolArea("area", 800, 600);
     }
     area.clear("White");
-    area.draw(paint);
+    paint.drawShapes(area);
     area.waitForMouseEvents((x, y) -> paint.callback(area, x, y));
   }
 }

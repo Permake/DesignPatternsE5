@@ -1,6 +1,5 @@
 package fr.uge.poo.paint.ex6;
 
-
 import java.awt.*;
 
 public class AbstractRectangleLikeShape {
@@ -16,8 +15,8 @@ public class AbstractRectangleLikeShape {
     this.height = height;
   }
 
-  private Point center(){
-    return new Point(x + width/2, y + height/2);
+  private Point center() {
+    return new Point(x + width / 2, y + height / 2);
   }
 
   public double distance(int x, int y) {

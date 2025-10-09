@@ -1,10 +1,8 @@
 package fr.uge.poo.paint.ex5;
 
-import java.awt.*;
-
 public sealed interface Shape permits Rectangle, Ellipse, Line {
 
-  void draw(Area area);
+  void draw(Area area, String color);
 
   double distance(int x, int y);
 }

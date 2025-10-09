@@ -1,12 +1,10 @@
 package fr.uge.poo.paint.ex5;
 
-import java.awt.*;
 import java.util.List;
 
 public class Paint {
   private final List<Shape> shapes;
   private Shape closestShape;
-
 
   public Paint(List<Shape> shapes) {
     this.shapes = shapes;
@@ -14,18 +12,18 @@ public class Paint {
 
   public void drawShapes(Area graphics) {
     for (var shape : shapes) {
-      graphics.setColor("Black");
+      var color = "Black";
       if (shape.equals(closestShape)) {
-        graphics.setColor("Orange");
+        color = "Orange";
       }
-      shape.draw(graphics);
+      shape.draw(graphics, color);
     }
   }
 
   void callback(Area area, int x, int y) {
     findClosestShape(x, y);
     area.clear("White");
-    area.draw(this);
+    drawShapes(area);
   }
 
   private void findClosestShape(int x, int y) {
