@@ -4,34 +4,29 @@ import fr.uge.poo.simplegraphics.SimpleGraphics;
 
 import java.awt.*;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
-public final class SimpleArea implements Area{
+public final class SimpleArea implements Area {
   private final SimpleGraphics area;
-  private Color color = Color.BLACK;
-  private Graphics2D graphics;
 
-  public SimpleArea(String name, int width, int height){
+  public SimpleArea(String name, int width, int height) {
     area = new SimpleGraphics(name, width, height);
   }
+
   @Override
   public void clear(String color) {
     area.clear(getColorValue(color));
   }
 
   @Override
-  public void waitForMouseEvents(BiConsumer<Integer, Integer> mouseCallback) {
+  public void waitForMouseEvents(MouseClickCallback mouseCallback) {
     Objects.requireNonNull(mouseCallback);
-    area.waitForMouseEvents(mouseCallback::accept);
+    area.waitForMouseEvents(mouseCallback::onMouseEvent);
   }
 
-  @Override
-  public void draw(Paint paint) {
-    area.render(g -> {
-      graphics = g;
-      paint.drawShapes(this);
-    });
-  }
+  // @Override
+  // public void draw(List<Shape> shapes) {
+  // shapes.forEach(s -> s.draw(this));
+  // }
 
   private Color getColorValue(String color) {
     return switch (color.toLowerCase()) {
@@ -46,22 +41,26 @@ public final class SimpleArea implements Area{
   }
 
   @Override
-  public void setColor(String color) {
-    this.color = getColorValue(color);
+  public void drawRect(int x, int y, int width, int height, String color) {
+    area.render(g -> {
+      g.setColor(getColorValue(color));
+      g.drawRect(x, y, width, height);
+    });
   }
 
   @Override
-  public void drawRect(int x, int y, int width, int height) {
-    graphics.drawRect(x, y ,width, height);
+  public void drawOval(int x, int y, int width, int height, String color) {
+    area.render(g -> {
+      g.setColor(getColorValue(color));
+      g.drawOval(x, y, width, height);
+    });
   }
 
   @Override
-  public void drawOval(int x, int y, int width, int height) {
-    graphics.drawOval(x, y , width, height);
-  }
-
-  @Override
-  public void drawLine(int x1, int y1, int x2, int y2) {
-    graphics.drawLine(x1, y1, x2, y2);
+  public void drawLine(int x1, int y1, int x2, int y2, String color) {
+    area.render(g -> {
+      g.setColor(getColorValue(color));
+      g.drawLine(x1, y1, x2, y2);
+    });
   }
 }

@@ -3,13 +3,11 @@ package fr.uge.poo.paint.ex4;
 import fr.uge.poo.simplegraphics.SimpleGraphics;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Paint {
   private final List<Shape> shapes;
   private Shape closestShape;
-
 
   public Paint(List<Shape> shapes) {
     this.shapes = shapes;

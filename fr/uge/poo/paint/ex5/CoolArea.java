@@ -2,16 +2,13 @@ package fr.uge.poo.paint.ex5;
 
 import com.evilcorp.coolgraphics.CoolGraphics;
 
-import java.awt.*;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
-public final class CoolArea implements Area{
+public final class CoolArea implements Area {
 
   private final CoolGraphics area;
-  private CoolGraphics.ColorPlus colorPlus = CoolGraphics.ColorPlus.BLACK;
 
-  public CoolArea(String name, int width, int height){
+  public CoolArea(String name, int width, int height) {
     area = new CoolGraphics(name, width, height);
   }
 
@@ -21,15 +18,15 @@ public final class CoolArea implements Area{
   }
 
   @Override
-  public void waitForMouseEvents(BiConsumer<Integer, Integer> mouseCallback){
+  public void waitForMouseEvents(MouseClickCallback mouseCallback) {
     Objects.requireNonNull(mouseCallback);
-    area.waitForMouseEvents(mouseCallback::accept);
+    area.waitForMouseEvents(mouseCallback::onMouseEvent);
   }
 
-  @Override
-  public void draw(Paint paint) {
-    paint.drawShapes(this);
-  }
+  // @Override
+  // public void draw(List<Shape> shapes) {
+  // shapes.forEach(s -> s.draw(this));
+  // }
 
   private CoolGraphics.ColorPlus getColorValue(String color) {
     return switch (color.toLowerCase()) {
@@ -44,25 +41,20 @@ public final class CoolArea implements Area{
   }
 
   @Override
-  public void setColor(String color) {
-    colorPlus = getColorValue(color);
+  public void drawRect(int x, int y, int width, int height, String color) {
+    area.drawLine(x, y, x, y + height, getColorValue(color));
+    area.drawLine(x, y, x + width, y, getColorValue(color));
+    area.drawLine(x, y + height, x + width, y + height, getColorValue(color));
+    area.drawLine(x + width, y, x + width, y + height, getColorValue(color));
   }
 
   @Override
-  public void drawRect(int x, int y, int width, int height) {
-    area.drawLine(x, y, x, y+height, colorPlus);
-    area.drawLine(x, y, x+width, y, colorPlus);
-    area.drawLine(x, y+height, x+width, y+height, colorPlus);
-    area.drawLine(x+width, y, x+width, y+height, colorPlus);
+  public void drawOval(int x, int y, int width, int height, String color) {
+    area.drawEllipse(x, y, width, height, getColorValue(color));
   }
 
   @Override
-  public void drawOval(int x, int y, int width, int height) {
-    area.drawEllipse(x, y, width, height, colorPlus);
-  }
-
-  @Override
-  public void drawLine(int x1, int y1, int x2, int y2) {
-    area.drawLine(x1, y1, x2, y2, colorPlus);
+  public void drawLine(int x1, int y1, int x2, int y2, String color) {
+    area.drawLine(x1, y1, x2, y2, getColorValue(color));
   }
 }
