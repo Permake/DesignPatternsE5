@@ -6,7 +6,7 @@ public final class Rectangle extends AbstractRectangleLikeShape implements Shape
   }
 
   @Override
-  public void draw(Area area, String color) {
+  public void draw(Area area, Area.ColorArea color) {
     area.drawRect(x, y, width, height, color);
   }
 }

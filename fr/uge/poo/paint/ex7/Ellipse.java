@@ -6,7 +6,7 @@ public final class Ellipse extends AbstractRectangleLikeShape implements Shape {
   }
 
   @Override
-  public void draw(Area area, String color) {
+  public void draw(Area area, Area.ColorArea color) {
     area.drawOval(x, y, width, height, color);
   }
 }

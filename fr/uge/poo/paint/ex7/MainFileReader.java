@@ -47,13 +47,13 @@ public class MainFileReader {
     Area area;
     var shapeBound = paint.getBound();
     if (args.length == 2 && Objects.equals(args[1], "--legacy")) {
-      area = new SimpleArea("area", shapeBound.width() >= 500 ? shapeBound.width() : 500,
-          shapeBound.height() >= 500 ? shapeBound.height() : 500);
+      area = new SimpleArea("area", Math.max(shapeBound.width(), 500),
+              Math.max(shapeBound.height(), 500));
     } else {
-      area = new CoolArea("area", shapeBound.width() >= 500 ? shapeBound.width() : 500,
-          shapeBound.height() >= 500 ? shapeBound.height() : 500);
+      area = new CoolArea("area", Math.max(shapeBound.width(), 500),
+              Math.max(shapeBound.height(), 500));
     }
-    area.clear("White");
+    area.clear(Area.ColorArea.WHITE);
     paint.drawShapes(area);
     area.waitForMouseEvents((x, y) -> paint.callback(area, x, y));
   }

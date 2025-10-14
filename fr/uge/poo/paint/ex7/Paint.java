@@ -16,9 +16,9 @@ public class Paint {
 
   public void drawShapes(Area graphics) {
     for (var shape : shapes) {
-      var color = "Black";
+      var color = Area.ColorArea.BLACK;
       if (shape.equals(closestShape)) {
-        color = "Orange";
+        color = Area.ColorArea.ORANGE;
       }
       shape.draw(graphics, color);
     }
@@ -27,7 +27,7 @@ public class Paint {
 
   void callback(Area area, int x, int y) {
     findClosestShape(x, y);
-    area.clear("White");
+    area.clear(Area.ColorArea.WHITE);
     drawShapes(area);
   }
 
