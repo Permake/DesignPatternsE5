@@ -1,9 +1,6 @@
 package fr.uge.poo.uberclient.question3;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static fr.uge.poo.uberclient.question3.User.Nationality.BRITISH;
@@ -12,16 +9,19 @@ import static fr.uge.poo.uberclient.question3.User.Nationality.FRENCH;
 public class Newsletter {
   private String name;
   private final Predicate<User> verifier;
-  private final HashSet<String> emails = new HashSet<>();
+  private final HashMap<String, User> emails = new HashMap<>();
   private final MailService mailer;
+  private final List<NewsletterObserver> observers = new ArrayList<>();
+  private boolean is100 = false;
 
   static class NewsletterBuilder {
     private String name;
     private int minAge;
     private MailService mailer;
-    private final List<User.Nationality> authorizedNationalities = new ArrayList<>();
+    private final Set<User.Nationality> authorizedNationalities = new HashSet<>();
 
     public NewsletterBuilder name(String name) {
+      Objects.requireNonNull(name);
       this.name = name;
       return this;
     }
@@ -31,16 +31,19 @@ public class Newsletter {
       return this;
     }
     public NewsletterBuilder nationalities(List<User.Nationality> nationalities) {
+      Objects.requireNonNull(nationalities);
       this.authorizedNationalities.addAll(nationalities);
       return this;
     }
 
     public NewsletterBuilder nationalities(User.Nationality nationality) {
+      Objects.requireNonNull(nationality);
       this.authorizedNationalities.add(nationality);
       return this;
     }
 
     private NewsletterBuilder mailer(MailService mailer) {
+      Objects.requireNonNull(mailer);
       this.mailer = mailer;
       return this;
     }
@@ -51,7 +54,7 @@ public class Newsletter {
 
     public Newsletter build() {
       return new Newsletter(name,
-              user -> user.age()>=minAge && authorizedNationalities.contains(user.nationality()),
+              user -> user.age() >= minAge && (authorizedNationalities.isEmpty() || authorizedNationalities.contains(user.nationality())),
               mailer == null ? getDefaultMailService() : mailer);
     }
   }
@@ -62,16 +65,30 @@ public class Newsletter {
     this.mailer = mailer;
   }
 
-  public void subscribe (User user) {
+  public String name() {
+      return name;
+  }
+
+  public boolean is100() {
+      return is100;
+  }
+
+    public HashMap<String, User> emails() {
+        return emails;
+    }
+
+    public void subscribe (User user) {
     Objects.requireNonNull(user);
     if (!verifier.test(user)) {
       throw new IllegalArgumentException("The user doesn't meet the criteria for this newsletter");
     }
     var userEmail = user.email();
-    if(emails.contains(userEmail)) {
-      throw new IllegalArgumentException("Email already exist in the list");
+    if(emails.containsKey(userEmail)) {
+        observers.forEach(o -> o.onFailedSubscribe(this, user, mailer));
     }
-    emails.add(userEmail);
+    emails.put(userEmail, user);
+    observers.forEach(o -> o.onSubscribe(this, user, mailer));
+    if (emails.size() == 100) is100 = true;
   }
 
   public void unsubscribe (User user) {
@@ -84,7 +101,7 @@ public class Newsletter {
     Objects.requireNonNull(title);
     Objects.requireNonNull(content);
     var subject  = "[" + name + "]" + title;
-    mailer.sendBulk(emails.stream().toList(), subject, content);
+    mailer.sendBulk(emails.keySet().stream().toList(), subject, content);
   }
 
   static void main (String[] args) {
@@ -97,6 +114,7 @@ public class Newsletter {
             .name("Java 4ever")
             .minAge(21)
             .nationalities(List.of(FRENCH, BRITISH))
+            .mailer(new EEMailerAdapter())
             .build();
     var newsletterWhyMe = new Newsletter("Why Me!",
             user -> user.age()%2 == 0 && user.email().endsWith("@univ-eiffel.fr"),
